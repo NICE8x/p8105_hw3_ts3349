@@ -1,0 +1,32 @@
+---
+title: "p8105_hw3_ts3349"
+author: "Tessa Senders"
+date: "10/6/2020"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load libraries}
+library(tidyverse)
+library(p8105.datasets)
+```
+
+## Problem 1
+
+
+```{r load data prob 1}
+data("instacart")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
