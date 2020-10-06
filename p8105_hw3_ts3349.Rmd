@@ -76,3 +76,29 @@ instacart %>%
 
 ```
 
+## Problem 2
+
+Bullet 1: need to pivot longer with activity variables (activity count and minute of the day)
+mutate to add weekend vs weekday
+make numeric things numeric and make order make sense!
+
+Bullet 2: aggregate something to create total (group by and summarize- week, day or id or something, aggregate using mean or sum or something).  end up with 35 days in table, need to arrange table columns (week number day of the week).  understand whats going on in the table
+
+Bullet 3: ggplot, need to fix data (minute on x axis, activity count on y axis), want activity at eveyr minute of every day, geom_line but dont use scatterplot, use color for day of the week (aes mapping), describe patterns in plot (which days less or more active, when are they asleep?).  have 35 squiggly lines
+
+Hints:
+day of the week columns will be in wrong order-use factor to fix
+check if minute of the day is numeric or not?  do not want character variable
+
+## Problem 3
+
+Bullet 1: need to separate date to get three variables.  do not need to convert month to name.  change units on variables to something useful (want to round to integers?).  need to count snowfall.  
+
+Bullet 2: data manipulation followed by plotting.  want january and july and avg max temp in each station across years group by (station, year, month) and then summarize, then filter by month (want january and july only).  each station have avg max temp.  plot those.  avg max temp over years.  many line stacked on each other.  use facet for two panel plot.  what structure appears?  january hotter now?  global warming happening?  some stations always colder?
+
+Bullet 3: two distinct plots need to be joined via patchwork.  1st plot-contour or hex plot not scatterplot.  2nd plot-filter and then show distribution (boxplot, violin, ridge, etc)-one box for each year.
+
+
+
+
+
