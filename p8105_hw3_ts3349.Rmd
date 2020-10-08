@@ -78,6 +78,27 @@ instacart %>%
 
 ## Problem 2
 
+Load, tidy, and otherwise wrangle the data. Your final dataset should include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes. Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
+
+```{r problem 2 import data}
+activity_df <- read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "minute_of_day", 
+    values_to = "activity_count"
+  ) %>%
+  mutate(day = str_to_lower(day)) %>%
+  mutate(day_temp = as.numeric(factor(day, levels = str_c(c("saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"))))) %>%
+  mutate(day_of_week = if_else(day_temp == 1 | day_temp == 2, "weekend", "weekday")) %>%
+  select(!day_temp)
+
+  
+```
+
+
+
+
 Bullet 1: need to pivot longer with activity variables (activity count and minute of the day)
 mutate to add weekend vs weekday
 make numeric things numeric and make order make sense!
