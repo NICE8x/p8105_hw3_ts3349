@@ -80,7 +80,12 @@ instacart %>%
 
 Load, tidy, and otherwise wrangle the data. Your final dataset should include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes. Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
 
-```{r problem 2 import data}
+Bullet 1: need to pivot longer with activity variables (activity count and minute of the day)
+mutate to add weekend vs weekday
+make numeric things numeric and make order make sense!
+
+
+```{r problem 2 bullet 1}
 activity_df <- read_csv("./data/accel_data.csv") %>%
   janitor::clean_names() %>%
   pivot_longer(
@@ -91,21 +96,46 @@ activity_df <- read_csv("./data/accel_data.csv") %>%
   mutate(day = str_to_lower(day)) %>%
   mutate(day_temp = as.numeric(factor(day, levels = str_c(c("saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"))))) %>%
   mutate(day_of_week = if_else(day_temp == 1 | day_temp == 2, "weekend", "weekday")) %>%
-  select(!day_temp)
+  select(!day_temp)%>%
+  mutate(minute_of_day = as.numeric(str_remove(minute_of_day, "activity_")))
 
-  
+head(activity_df)  
+```
+
+
+
+Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
+
+Bullet 2: aggregate something to create total (group by and summarize- week, day or id or something, aggregate using mean or sum or something).  end up with 35 days in table, need to arrange table columns (week number day of the week).  understand whats going on in the table
+
+```{r problem 2 bullet 2}
+activity_table_df <- activity_df %>% 
+  group_by(day_id, week) %>%
+  summarize(total_activity = sum(activity_count)) %>%
+  relocate(week)
+
+activity_table_df %>%
+  knitr::kable()
 ```
 
 
 
 
-Bullet 1: need to pivot longer with activity variables (activity count and minute of the day)
-mutate to add weekend vs weekday
-make numeric things numeric and make order make sense!
-
-Bullet 2: aggregate something to create total (group by and summarize- week, day or id or something, aggregate using mean or sum or something).  end up with 35 days in table, need to arrange table columns (week number day of the week).  understand whats going on in the table
-
 Bullet 3: ggplot, need to fix data (minute on x axis, activity count on y axis), want activity at eveyr minute of every day, geom_line but dont use scatterplot, use color for day of the week (aes mapping), describe patterns in plot (which days less or more active, when are they asleep?).  have 35 squiggly lines
+
+Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
+
+```{r problem 2 bullet 3}
+activity_df  %>% 
+  ggplot(aes(x = minute_of_day, y = activity_count, color = day)) + 
+  geom_line() + 
+  labs(
+    title = "Activity Over the Course of the Day",
+    x = "Minute of the Day",
+    y = "Activity Count",
+    caption = "Data from the accelerometer data collected on a 63 year-old male with BMI 25"
+  )
+```
 
 Hints:
 day of the week columns will be in wrong order-use factor to fix
