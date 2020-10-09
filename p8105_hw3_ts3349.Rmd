@@ -145,6 +145,26 @@ check if minute of the day is numeric or not?  do not want character variable
 
 Bullet 1: need to separate date to get three variables.  do not need to convert month to name.  change units on variables to something useful (want to round to integers?).  need to count snowfall.  
 
+Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. For snowfall, what are the most commonly observed values? Why?
+
+```{r problem 3 bullet 1}
+
+ny_noaa_df <- ny_noaa %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "minute_of_day", 
+    values_to = "activity_count"
+  ) %>%
+  mutate(day = str_to_lower(day)) %>%
+  mutate(day_temp = as.numeric(factor(day, levels = str_c(c("saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"))))) %>%
+  mutate(day_of_week = if_else(day_temp == 1 | day_temp == 2, "weekend", "weekday")) %>%
+  select(!day_temp)%>%
+  mutate(minute_of_day = as.numeric(str_remove(minute_of_day, "activity_")))
+
+head(activity_df)  
+```
+
 Bullet 2: data manipulation followed by plotting.  want january and july and avg max temp in each station across years group by (station, year, month) and then summarize, then filter by month (want january and july only).  each station have avg max temp.  plot those.  avg max temp over years.  many line stacked on each other.  use facet for two panel plot.  what structure appears?  january hotter now?  global warming happening?  some stations always colder?
 
 Bullet 3: two distinct plots need to be joined via patchwork.  1st plot-contour or hex plot not scatterplot.  2nd plot-filter and then show distribution (boxplot, violin, ridge, etc)-one box for each year.
