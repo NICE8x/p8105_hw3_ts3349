@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load libraries}
 library(tidyverse)
 library(p8105.datasets)
+library(hexbin)
+library(patchwork)
 ```
 
 ## Problem 1
@@ -181,18 +183,54 @@ Make a two-panel plot showing the average max temperature in January and in July
 
 ```{r problem 3 bullet 2}
 noaa_jan_july_df <- ny_noaa_df  %>% 
-  filter((month == 1) | (month == 7))
-  ggplot(aes(x = minute_of_day, y = activity_count, color = day)) + 
+  filter((month == 1) | (month == 7)) %>%
+  group_by(id, year, month) %>%
+  summarize(avg_max_temp = mean(tmax, na.rm=TRUE))
+
+noaa_jan_july_df %>%
+  ggplot(aes(x = year, y = avg_max_temp, color = id)) + 
   geom_line() + 
+  facet_grid(. ~ month) +
   labs(
-    title = "Activity Over the Course of the Day",
-    x = "Minute of the Day",
-    y = "Activity Count",
-    caption = "Data from the accelerometer data collected on a 63 year-old male with BMI 25"
-  )
+    title = "Average Max Temperature Across Years for January vs July",
+    x = "Year",
+    y = "Average Max Temperature (C)",
+    caption = "Data from the New York NOAA weather stations across years for January and July ") +
+    theme(legend.position = "none") 
 ```
 
 Bullet 3: two distinct plots need to be joined via patchwork.  1st plot-contour or hex plot not scatterplot.  2nd plot-filter and then show distribution (boxplot, violin, ridge, etc)-one box for each year.
+
+Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year
+
+```{r problem 3 bullet 3}
+tmax_vs_tmin_plot <- ny_noaa_df %>%
+  ggplot(aes(x = tmax, y = tmin)) + 
+  geom_hex() + 
+  labs(
+    title = "Average Max Temperature vs Average Min Temperature",
+    x = "Max Temperature (C)",
+    y = "Min Temperature (C)",
+    caption = "Data from the New York NOAA weather stations") 
+
+
+snowfall_plot <- ny_noaa_df  %>% 
+  filter((snow_cm > 0) & (snow_cm < 100)) %>%
+  ggplot(aes(x = as.character(year), y = snow_cm)) + 
+  geom_violin() + 
+  labs(
+    title = "Snowfall Across Years (Greater than 0 and less than 100 cm)",
+    x = "Year",
+    y = "Snowfall (cm)",
+    caption = "Data from the New York NOAA weather stations")  +
+  theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 1))
+
+tmax_vs_tmin_plot / snowfall_plot
+
+```
+
+
+
 
 
 
