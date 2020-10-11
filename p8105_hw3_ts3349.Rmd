@@ -218,7 +218,7 @@ snowfall_plot <- ny_noaa_df  %>%
 tmax_vs_tmin_plot / snowfall_plot
 
 ```
-In the first graph the average max temperature and the average min temperature for many stations tend to be the same/similar.  There are many stations that recorded an average max temperature of around 30 and an average minimum temperature of around 30.  In the second graph, the distribution of snowfall for each year tends to be similar except for a few years.  In 1998, 2006, and 2020 the 3rd quartiles are lower than the rest of the years.
+In the first graph the max temperature and the min temperature for many recorded points for many stations tend to be the same/similar.  There are many stations that recorded max temperatures of around 30 and minimum temperatures of around 30.  In the second graph, the distribution of snowfall for each year tends to be similar except for a few years.  In 1998, 2006, and 2020 the 3rd quartiles are lower than the rest of the years.
 
 
 
