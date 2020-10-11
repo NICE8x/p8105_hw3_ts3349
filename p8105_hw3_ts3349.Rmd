@@ -85,12 +85,6 @@ instacart %>%
 
 ## Problem 2
 
-Load, tidy, and otherwise wrangle the data. Your final dataset should include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes. Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
-
-Bullet 1: need to pivot longer with activity variables (activity count and minute of the day)
-mutate to add weekend vs weekday
-make numeric things numeric and make order make sense!
-
 
 ```{r problem 2 bullet 1}
 activity_df <- read_csv("./data/accel_data.csv") %>%
@@ -112,10 +106,6 @@ head(activity_df)
 This data set contains information from a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure.  For each minute of each day for a total of 5 weeks (35 days), his activity count was recorded.  The data set contains `r ncol(activity_df)` variables.  These variables include week(week number 1-5), day_of_week(whether the day was a weekday or weekend day), day(Sunday-Saturday), day_id(1-35), minute_of_day, and activity_count.  There are a total of `r nrow(activity_df)` rows in the final data set.  The median number for activity_count for example is `r median(pull(activity_df, activity_count))`.  
 
 
-Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
-
-Bullet 2: aggregate something to create total (group by and summarize- week, day or id or something, aggregate using mean or sum or something).  end up with 35 days in table, need to arrange table columns (week number day of the week).  understand whats going on in the table
-
 ```{r problem 2 bullet 2}
 activity_table_df <- activity_df %>% 
   group_by(day_id, week) %>%
@@ -127,11 +117,6 @@ activity_table_df %>%
 ```
 Looking at the data there are a couple clear outliers where the total activity count is below 2000.  Most of the total activity count values for each day are between 130,000 and 700,000.  For the first week most total activity count values were around 300,000.  The second week, most of the total activity count values seem to increase to around 400,000.  Overtime, however, the values become more sporadic dipping to around 150,000 and then increasing to as high as around 600,000.
 
-
-
-Bullet 3: ggplot, need to fix data (minute on x axis, activity count on y axis), want activity at eveyr minute of every day, geom_line but dont use scatterplot, use color for day of the week (aes mapping), describe patterns in plot (which days less or more active, when are they asleep?).  have 35 squiggly lines
-
-Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
 
 ```{r problem 2 bullet 3}
 activity_df  %>% 
@@ -147,12 +132,8 @@ activity_df  %>%
   ) +
   guides(color = guide_legend("Day"))
 ```
-Describe in words any patterns or conclusions you can make based on this graph.
 The first few hundred minutes of the day for all days of the week seem to have the lowest activity counts probably because the man is sleeping.  For most days of the week the activity count seems to spike towards the end of the day around the 1250th minute of the day.  Tuesdays through Thursdays seem to have some of the overall highest activity counts during the 450th minute and the 1200th minute of the day.  Mondays' activity count however typically peaks around the 750th minute of the day.
 
-Hints:
-day of the week columns will be in wrong order-use factor to fix
-check if minute of the day is numeric or not?  do not want character variable
 
 ## Problem 3
 
@@ -161,10 +142,6 @@ check if minute of the day is numeric or not?  do not want character variable
 data("ny_noaa")
 ```
 
-
-Bullet 1: need to separate date to get three variables.  do not need to convert month to name.  change units on variables to something useful (want to round to integers?).  need to count snowfall.  
-
-Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. For snowfall, what are the most commonly observed values? Why?
 
 ```{r problem 3 bullet 1}
 ny_noaa_df <- ny_noaa %>%
@@ -194,11 +171,6 @@ head(ny_noaa_snowfall)
 0.0 is the most commonly observed snowfall value because it does not snow year round in New York.  Most of the time it is not snowing.  After NA (missing), the next most common snowfall amounts are 2.5cm and 1.3cm.
 
 
-
-Bullet 2: data manipulation followed by plotting.  want january and july and avg max temp in each station across years group by (station, year, month) and then summarize, then filter by month (want january and july only).  each station have avg max temp.  plot those.  avg max temp over years.  many line stacked on each other.  use facet for two panel plot.  what structure appears?  january hotter now?  global warming happening?  some stations always colder?
-
-Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
-
 ```{r problem 3 bullet 2}
 noaa_jan_july_df <- ny_noaa_df  %>% 
   filter((month == 1) | (month == 7)) %>%
@@ -217,16 +189,8 @@ noaa_jan_july_df %>%
     theme(legend.position = "none") +
     theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 1))
 ```
-Both graphs show a zigzag pattern where the average max temperature dips a little one year but then increases a little the next year.  There seems to be a very slight upward trend for January but overall the average max temperatures for January seem fairly consistent.  The average max temperature in July seem very consistent overall.  Some stations in both graphs seem to always be slightly higher or slightly lower overall than the others.  In the graph for July there seems to be a station that is an outlier in the late 80s with a large dip in the average max temperature.  In the year 2000 for January there seems to be a station with a much higher average max temperature than the others.
+Both graphs show a zigzag pattern where the average max temperature dips a little one year but then increases a little the next year.  There seems to be a very slight upward trend for January but overall the average max temperatures for January seem fairly consistent.  The average max temperature in July seem very consistent overall.  Some stations in both graphs seem to always be slightly higher or slightly lower overall than the others.  In the graph for July there seems to be a station that is an outlier in the late 80s with a large dip in the average max temperature.  In the year 2000 for January there seems to be a station with a much higher average max temperature than the others.  The max temperatures in July are overall higher than the max temperatures in January.
 
-Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
-
-
-
-
-Bullet 3: two distinct plots need to be joined via patchwork.  1st plot-contour or hex plot not scatterplot.  2nd plot-filter and then show distribution (boxplot, violin, ridge, etc)-one box for each year.
-
-Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year
 
 ```{r problem 3 bullet 3}
 tmax_vs_tmin_plot <- ny_noaa_df %>%
@@ -240,19 +204,22 @@ tmax_vs_tmin_plot <- ny_noaa_df %>%
 
 
 snowfall_plot <- ny_noaa_df  %>% 
-  filter((snow_cm > 0) & (snow_cm < 100)) %>%
-  ggplot(aes(x = as.character(year), y = snow_cm)) + 
-  geom_violin() + 
+  mutate(snow = snow_cm *10) %>%
+  filter((snow > 0) & (snow < 100)) %>%
+  ggplot(aes(x = as.character(year), y = (snow))) + 
+  geom_boxplot() + 
   labs(
-    title = "Snowfall Across Years (Greater than 0 and Less than 100 cm)",
+    title = "Snowfall Across Years (Greater than 0 and Less than 100 mm)",
     x = "Year",
-    y = "Snowfall (cm)",
+    y = "Snowfall (mm)",
     caption = "Data from the New York NOAA weather stations")  +
   theme(axis.text.x = element_text(angle = 270, vjust = 0.5, hjust = 1))
 
 tmax_vs_tmin_plot / snowfall_plot
 
 ```
+In the first graph the average max temperature and the average min temperature for many stations tend to be the same/similar.  There are many stations that recorded an average max temperature of around 30 and an average minimum temperature of around 30.  In the second graph, the distribution of snowfall for each year tends to be similar except for a few years.  In 1998, 2006, and 2020 the 3rd quartiles are lower than the rest of the years.
+
 
 
 
